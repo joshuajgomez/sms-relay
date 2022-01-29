@@ -1,4 +1,4 @@
-package com.joshgm3z.smsrelay
+package com.joshgm3z.smsrelay.domain
 
 import android.content.Context
 import android.telephony.SmsMessage
@@ -9,12 +9,13 @@ import com.joshgm3z.smsrelay.ui.AdapterClickListener
 import com.joshgm3z.smsrelay.ui.SenderContract
 import com.joshgm3z.smsrelay.utils.Logger
 
-class SmsManager(mContext: Context, private val mView: SenderContract.View?) :
-    AdapterClickListener {
+class SmsManager constructor(mContext: Context) : AdapterClickListener {
 
     companion object {
         private const val TAG = "SmsManager"
     }
+
+    var mView: SenderContract.View? = null
 
     private var mAppDatabase: AppDatabase = AppDatabase.getDatabase(mContext)
 
@@ -46,8 +47,8 @@ class SmsManager(mContext: Context, private val mView: SenderContract.View?) :
         return fromPdu.displayOriginatingAddress
     }
 
-    private fun registerSender(name: String) {
-        Logger.log("name=[$name]");
+    fun registerSender(name: String) {
+        Logger.log(Log.ASSERT, "name=[$name]");
         var sender: Sender = mAppDatabase.senderDao().getSender(name)
         if (sender == null) {
             // new sender
@@ -59,7 +60,6 @@ class SmsManager(mContext: Context, private val mView: SenderContract.View?) :
         }
         mAppDatabase.senderDao().insert(sender)
         mView?.updateSender(sender)
-        Logger.log(Log.ASSERT, "$mView")
     }
 
     fun getAllSenders(): List<Sender> {

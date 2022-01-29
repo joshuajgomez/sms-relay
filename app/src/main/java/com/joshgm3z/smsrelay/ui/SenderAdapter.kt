@@ -1,6 +1,7 @@
 package com.joshgm3z.smsrelay.ui
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.joshgm3z.smsrelay.R
 import com.joshgm3z.smsrelay.room.Sender
+import com.joshgm3z.smsrelay.utils.Logger
 
 class SenderAdapter(
     private val mContext: Context,
@@ -71,15 +73,27 @@ class SenderAdapter(
     }
 
     fun updateSender(sender: Sender) {
-        var counter: Int = -1
+        var counter: Int = 0
+        var isKnown = false
         for (_sender in mList) {
-            counter++
             if (_sender.name == sender.name) {
+                isKnown = true
                 break;
             }
+            counter++
         }
-        mList[counter] = sender
-        notifyItemChanged(counter)
+        Logger.log(Log.ASSERT, "adapter before", mList.toString())
+        Logger.log(Log.ASSERT, "counter", counter.toString())
+        if (!isKnown) {
+            // new sender
+            mList.add(sender)
+            notifyItemChanged(mList.size - 1)
+        } else {
+            // sender already exists
+            mList[counter] = sender
+            notifyItemChanged(counter)
+        }
+        Logger.log(Log.ASSERT, "adapter after", mList.toString())
     }
 
 }
