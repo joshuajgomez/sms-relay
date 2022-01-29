@@ -50,6 +50,15 @@ class SenderAdapter(
         private var mCbBlock: CheckBox = itemView.findViewById(R.id.cb_block)
         private lateinit var mSender: Sender
 
+        init {
+            mTvName = itemView.findViewById(R.id.tv_sender_name)
+            mTvCount = itemView.findViewById(R.id.tv_count)
+            mTvSerialNumber = itemView.findViewById(R.id.tv_serial_number)
+            mCbBlock = itemView.findViewById(R.id.cb_block)
+            mItemView.setOnClickListener { mCbBlock.performClick() }
+        }
+
+
         fun setData(sender: Sender, serialNumber: Int) {
             mSender = sender
             mTvName.text = sender.name
@@ -60,7 +69,7 @@ class SenderAdapter(
             mCbBlock.isChecked = sender.isBlocked
 
             mCbBlock.setOnCheckedChangeListener { _, isChecked ->
-                mCallback?.onBlockChanged(
+                mCallback.onBlockChanged(
                     sender.name,
                     isChecked
                 )
