@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SmsRelay2</string>
+    <string name="string_error_empty_list">Waiting for SMS</string>
+    <string name="string_error_permission">Please grant SMS permission to let the app listen to incoming SMS</string>
 </resources>

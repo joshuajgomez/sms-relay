@@ -17,7 +17,7 @@ class SenderAdapter(
     private val mCallback: AdapterClickListener
 ) : RecyclerView.Adapter<SenderAdapter.SenderViewHolder>(), AdapterClickListener {
 
-    private lateinit var mList: MutableList<Sender>
+    var mList: MutableList<Sender> = mutableListOf()
 
     fun setList(list: List<Sender>) {
         mList = list.toMutableList()
