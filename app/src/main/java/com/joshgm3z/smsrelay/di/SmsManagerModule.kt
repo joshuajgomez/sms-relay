@@ -1,7 +1,10 @@
 package com.joshgm3z.smsrelay.di
 
 import android.content.Context
-import com.joshgm3z.smsrelay.domain.SmsManager
+import androidx.room.Room
+import com.joshgm3z.smsrelay.domain.SmsRepository
+import com.joshgm3z.smsrelay.room.AppDatabase
+import com.joshgm3z.smsrelay.ui.SenderViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,8 +18,27 @@ class SmsManagerModule {
 
     @Singleton
     @Provides
-    fun providesSmsManager(@ApplicationContext context: Context): SmsManager{
-        return SmsManager(context)
+    fun providesSmsRepository(appDatabase: AppDatabase): SmsRepository {
+        return SmsRepository(appDatabase)
+    }
+
+    @Singleton
+    @Provides
+    fun providesAppDatabase(@ApplicationContext context: Context): AppDatabase {
+        return Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "sms_sender_database"
+        )
+            .allowMainThreadQueries()
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun providesSenderViewModel(model: SmsRepository, ): SenderViewModel {
+        return SenderViewModel(model)
     }
 
 }

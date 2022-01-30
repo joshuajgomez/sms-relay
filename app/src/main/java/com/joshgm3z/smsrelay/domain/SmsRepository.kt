@@ -1,23 +1,23 @@
 package com.joshgm3z.smsrelay.domain
 
-import android.content.Context
 import android.telephony.SmsMessage
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.joshgm3z.smsrelay.room.AppDatabase
 import com.joshgm3z.smsrelay.room.Sender
-import com.joshgm3z.smsrelay.ui.AdapterClickListener
 import com.joshgm3z.smsrelay.ui.SenderContract
 import com.joshgm3z.smsrelay.utils.Logger
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class SmsManager constructor(mContext: Context) : AdapterClickListener {
+class SmsRepository
+@Inject
+constructor(private val mAppDatabase: AppDatabase) {
 
     companion object {
         private const val TAG = "SmsManager"
     }
-
-    var mView: SenderContract.View? = null
-
-    private var mAppDatabase: AppDatabase = AppDatabase.getDatabase(mContext)
 
     fun onNewSmsReceived(pdus: Array<*>?) {
         val sender = getSender(pdus)
@@ -47,8 +47,7 @@ class SmsManager constructor(mContext: Context) : AdapterClickListener {
         return fromPdu.displayOriginatingAddress
     }
 
-    fun registerSender(name: String) {
-        Logger.log(Log.ASSERT, "name=[$name]");
+    private fun registerSender(name: String) {
         var sender: Sender = mAppDatabase.senderDao().getSender(name)
         if (sender == null) {
             // new sender
@@ -59,14 +58,13 @@ class SmsManager constructor(mContext: Context) : AdapterClickListener {
             sender.count++
         }
         mAppDatabase.senderDao().insert(sender)
-        mView?.updateSender(sender)
     }
 
-    fun getAllSenders(): List<Sender> {
-        return mAppDatabase.senderDao().getAll()
+    fun getSenderList(): Flow<List<Sender>> {
+        return mAppDatabase.senderDao().getAllSenders()
     }
 
-    override fun onBlockChanged(name: String, isBlocked: Boolean) {
+    fun updateBlockedStatus(name: String, isBlocked: Boolean) {
         val sender = mAppDatabase.senderDao().getSender(name)
         sender.isBlocked = !sender.isBlocked
         mAppDatabase.senderDao().insert(sender)
@@ -75,7 +73,6 @@ class SmsManager constructor(mContext: Context) : AdapterClickListener {
             " is blocked"
         else
             " is unblocked"
-        mView?.showMessage(message)
     }
 
 }

@@ -1,7 +1,5 @@
 package com.joshgm3z.smsrelay.ui
 
-import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.joshgm3z.smsrelay.R
 import com.joshgm3z.smsrelay.room.Sender
-import com.joshgm3z.smsrelay.utils.Logger
 
 class SenderAdapter(
-    private val mContext: Context,
     private val mCallback: AdapterClickListener
 ) : RecyclerView.Adapter<SenderAdapter.SenderViewHolder>(), AdapterClickListener {
 
@@ -26,7 +22,7 @@ class SenderAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SenderViewHolder {
         val view = LayoutInflater
-            .from(mContext)
+            .from(parent.context)
             .inflate(R.layout.sender_item, parent, false)
         return SenderViewHolder(view, mCallback)
     }
@@ -69,7 +65,7 @@ class SenderAdapter(
             mCbBlock.isChecked = sender.isBlocked
 
             mCbBlock.setOnCheckedChangeListener { _, isChecked ->
-                mCallback.onBlockChanged(
+                mCallback.onBlockCheckboxToggle(
                     sender.name,
                     isChecked
                 )
@@ -77,8 +73,8 @@ class SenderAdapter(
         }
     }
 
-    override fun onBlockChanged(name: String, isBlocked: Boolean) {
-        mCallback.onBlockChanged(name, isBlocked)
+    override fun onBlockCheckboxToggle(name: String, isBlocked: Boolean) {
+        mCallback.onBlockCheckboxToggle(name, isBlocked)
     }
 
     fun updateSender(sender: Sender) {
@@ -91,8 +87,6 @@ class SenderAdapter(
             }
             counter++
         }
-        Logger.log(Log.ASSERT, "adapter before", mList.toString())
-        Logger.log(Log.ASSERT, "counter", counter.toString())
         if (!isKnown) {
             // new sender
             mList.add(sender)
@@ -102,7 +96,6 @@ class SenderAdapter(
             mList[counter] = sender
             notifyItemChanged(counter)
         }
-        Logger.log(Log.ASSERT, "adapter after", mList.toString())
     }
 
 }
