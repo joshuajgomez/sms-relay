@@ -11,6 +11,9 @@ interface SenderDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(sender: Sender)
 
+    @Update
+    fun update(sender: Sender)
+
     @Query("SELECT * FROM Sender")
     fun getAll(): List<Sender>
 

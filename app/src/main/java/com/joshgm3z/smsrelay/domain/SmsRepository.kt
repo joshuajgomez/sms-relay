@@ -67,7 +67,7 @@ constructor(private val mAppDatabase: AppDatabase) {
     fun updateBlockedStatus(name: String, isBlocked: Boolean) {
         val sender = mAppDatabase.senderDao().getSender(name)
         sender.isBlocked = !sender.isBlocked
-        mAppDatabase.senderDao().insert(sender)
+        mAppDatabase.senderDao().update(sender)
         var message: String = name
         message += if (isBlocked)
             " is blocked"
