@@ -53,11 +53,12 @@ constructor(private val mAppDatabase: AppDatabase) {
             // new sender
             sender = Sender(name, 1)
             sender.isBlocked = false
+            mAppDatabase.senderDao().insert(sender)
         } else {
             // known sender. increment count
             sender.count++
+            mAppDatabase.senderDao().update(sender)
         }
-        mAppDatabase.senderDao().insert(sender)
     }
 
     fun getSenderList(): Flow<List<Sender>> {
