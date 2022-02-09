@@ -65,10 +65,12 @@ class SenderAdapter(
             mCbBlock.isChecked = sender.isBlocked
 
             mCbBlock.setOnCheckedChangeListener { _, isChecked ->
-                mCallback.onBlockCheckboxToggle(
-                    sender.name,
-                    isChecked
-                )
+                if (mSender.isBlocked != isChecked) {
+                    mCallback.onBlockCheckboxToggle(
+                        sender.name,
+                        isChecked
+                    )
+                }
             }
         }
     }
