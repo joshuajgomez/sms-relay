@@ -4,6 +4,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -17,7 +21,9 @@ class SmsReceiver : BroadcastReceiver() {
             val bundle = intent.extras
             if (bundle != null) {
                 val pdus = bundle["pdus"] as Array<*>?
-                mSmsRepository.onNewSmsReceived(pdus)
+                GlobalScope.launch(Dispatchers.IO) {
+                    mSmsRepository.onNewSmsReceived(pdus)
+                }
             }
         }
     }

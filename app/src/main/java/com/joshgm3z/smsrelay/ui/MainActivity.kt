@@ -22,7 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), AdapterClickListener, SenderContract.View {
+class MainActivity : AppCompatActivity(), AdapterClickListener {
 
     private lateinit var mRvSenderList: RecyclerView
     private lateinit var mSenderAdapter: SenderAdapter
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(), AdapterClickListener, SenderContract.V
         mIvErrorInfo = findViewById(R.id.iv_error_info)
         mBtnPermission = findViewById(R.id.btn_permission)
 
-        mSenderViewModel.setView(this)
+        mSenderViewModel.mSenderList?.observe(this, senderListObserver)
     }
 
     private fun checkSmsPermission() {
@@ -75,8 +75,7 @@ class MainActivity : AppCompatActivity(), AdapterClickListener, SenderContract.V
     }
 
     private fun showListUI() {
-        Logger.log(Log.ASSERT, "mainactivity", "checklistsize")
-        val senderList = mSenderViewModel.getSenderList()?.value
+        val senderList = mSenderViewModel.mSenderList?.value
         if (senderList != null && senderList.isNotEmpty()) {
             // non-empty list
             mClErrorInfo.visibility = View.GONE
@@ -115,10 +114,6 @@ class MainActivity : AppCompatActivity(), AdapterClickListener, SenderContract.V
 
     override fun onBlockCheckboxToggle(name: String, isBlocked: Boolean) {
         mSenderViewModel.onBlockedCheckboxClicked(name, isBlocked)
-    }
-
-    override fun onDataFetched() {
-        mSenderViewModel.getSenderList()?.observe(this, senderListObserver)
     }
 
 }

@@ -7,13 +7,4 @@ import kotlinx.coroutines.flow.Flow
 
 interface SenderContract {
 
-    interface ViewModel {
-        fun onSenderListFetched(senderList: Flow<List<Sender>>)
-        fun showMessage(message: String)
-    }
-
-    interface View {
-        fun onDataFetched()
-    }
-
 }
