@@ -30,7 +30,6 @@ class SmsManagerModule {
             AppDatabase::class.java,
             "sms_sender_database"
         )
-            .allowMainThreadQueries()
             .fallbackToDestructiveMigration()
             .build()
     }

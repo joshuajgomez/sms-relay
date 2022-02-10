@@ -1,14 +1,13 @@
 package com.joshgm3z.smsrelay.domain
 
 import android.telephony.SmsMessage
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.joshgm3z.smsrelay.room.AppDatabase
 import com.joshgm3z.smsrelay.room.Sender
 import com.joshgm3z.smsrelay.ui.SenderContract
-import com.joshgm3z.smsrelay.utils.Logger
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SmsRepository
@@ -17,6 +16,12 @@ constructor(private val mAppDatabase: AppDatabase) {
 
     companion object {
         private const val TAG = "SmsManager"
+    }
+
+    private var mViewModel: SenderContract.ViewModel? = null
+
+    fun setViewModel(senderViewModel: SenderContract.ViewModel) {
+        mViewModel = senderViewModel
     }
 
     fun onNewSmsReceived(pdus: Array<*>?) {
@@ -48,32 +53,44 @@ constructor(private val mAppDatabase: AppDatabase) {
     }
 
     private fun registerSender(name: String) {
-        var sender: Sender = mAppDatabase.senderDao().getSender(name)
-        if (sender == null) {
-            // new sender
-            sender = Sender(name, 1)
-            sender.isBlocked = false
-            mAppDatabase.senderDao().insert(sender)
-        } else {
-            // known sender. increment count
-            sender.count++
-            mAppDatabase.senderDao().update(sender)
+        GlobalScope.launch {
+            var sender: Sender = mAppDatabase.senderDao().getSender(name)
+            if (sender == null) {
+                // new sender
+                sender = Sender(name, 1)
+                sender.isBlocked = false
+                mAppDatabase.senderDao().insert(sender)
+            } else {
+                // known sender. increment count
+                sender.count++
+                mAppDatabase.senderDao().update(sender)
+            }
         }
     }
 
-    fun getSenderList(): Flow<List<Sender>> {
-        return mAppDatabase.senderDao().getAllSenders()
+    fun fetchSenderList() {
+        GlobalScope.launch {
+            val senderList = mAppDatabase.senderDao().getAllSenders()
+            MainScope().launch {
+                mViewModel?.onSenderListFetched(senderList)
+            }
+        }
     }
 
     fun updateBlockedStatus(name: String, isBlocked: Boolean) {
-        val sender = mAppDatabase.senderDao().getSender(name)
-        sender.isBlocked = !sender.isBlocked
-        mAppDatabase.senderDao().update(sender)
-        var message: String = name
-        message += if (isBlocked)
-            " is blocked"
-        else
-            " is unblocked"
+        GlobalScope.launch {
+            val sender = mAppDatabase.senderDao().getSender(name)
+            sender.isBlocked = !sender.isBlocked
+            mAppDatabase.senderDao().update(sender)
+            var message: String = name
+            message += if (isBlocked)
+                " is blocked"
+            else
+                " is unblocked"
+            MainScope().launch {
+                mViewModel?.showMessage(message)
+            }
+        }
     }
 
 }

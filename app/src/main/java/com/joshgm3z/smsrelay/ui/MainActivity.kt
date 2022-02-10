@@ -8,7 +8,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -18,10 +17,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.joshgm3z.smsrelay.R
 import com.joshgm3z.smsrelay.room.Sender
+import com.joshgm3z.smsrelay.utils.Logger
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), AdapterClickListener {
+class MainActivity : AppCompatActivity(), AdapterClickListener, SenderContract.View {
 
     private lateinit var mRvSenderList: RecyclerView
     private lateinit var mSenderAdapter: SenderAdapter
@@ -32,11 +33,13 @@ class MainActivity : AppCompatActivity(), AdapterClickListener {
     private lateinit var mBtnPermission: Button
 
     private val senderListObserver = Observer<List<Sender>> { senderList ->
+        Logger.log(Log.ASSERT, "mainactivity", "data change")
         mSenderAdapter.setList(senderList)
         checkSmsPermission()
     }
 
-    private val mSenderViewModel: SenderViewModel by viewModels()
+    @Inject
+    lateinit var mSenderViewModel: SenderViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +61,7 @@ class MainActivity : AppCompatActivity(), AdapterClickListener {
         mIvErrorInfo = findViewById(R.id.iv_error_info)
         mBtnPermission = findViewById(R.id.btn_permission)
 
-        mSenderViewModel.getSenderList().observe(this, senderListObserver)
+        mSenderViewModel.setView(this)
     }
 
     private fun checkSmsPermission() {
@@ -72,7 +75,8 @@ class MainActivity : AppCompatActivity(), AdapterClickListener {
     }
 
     private fun showListUI() {
-        val senderList = mSenderViewModel.getSenderList().value
+        Logger.log(Log.ASSERT, "mainactivity", "checklistsize")
+        val senderList = mSenderViewModel.getSenderList()?.value
         if (senderList != null && senderList.isNotEmpty()) {
             // non-empty list
             mClErrorInfo.visibility = View.GONE
@@ -111,6 +115,10 @@ class MainActivity : AppCompatActivity(), AdapterClickListener {
 
     override fun onBlockCheckboxToggle(name: String, isBlocked: Boolean) {
         mSenderViewModel.onBlockedCheckboxClicked(name, isBlocked)
+    }
+
+    override fun onDataFetched() {
+        mSenderViewModel.getSenderList()?.observe(this, senderListObserver)
     }
 
 }
