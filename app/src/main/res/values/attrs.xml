@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <attr name="colorTextTitle" format="color" />
+    <attr name="colorTextSender" format="color" />
     <attr name="colorTextSubtitle" format="color" />
+    <attr name="colorInfoBannerBg" format="color" />
+    <attr name="icInfo" format="reference" />
 </resources>

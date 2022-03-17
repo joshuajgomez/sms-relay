@@ -12,7 +12,11 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
-        <item name="colorTextTitle">@color/black</item>
+
+        <item name="colorTextTitle">@color/dark_violet</item>
+        <item name="colorTextSender">@color/black</item>
         <item name="colorTextSubtitle">@color/dark_gray</item>
+        <item name="colorInfoBannerBg">@color/ultra_light_gray</item>
+        <item name="icInfo">@drawable/ic_info_violet</item>
     </style>
 </resources>
