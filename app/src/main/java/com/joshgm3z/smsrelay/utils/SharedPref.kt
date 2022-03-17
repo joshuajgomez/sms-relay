@@ -2,21 +2,19 @@ package com.joshgm3z.smsrelay.utils
 
 import android.content.Context
 import android.preference.PreferenceManager
-import javax.inject.Inject
+import com.joshgm3z.smsrelay.utils.SortUtil.Companion.ORDER_NEWEST
 
 class SharedPref(private val context: Context) {
 
     companion object SortOrder {
         const val KEY = "KEY_SORT_ORDER"
-         const val ORDER_DATE = 0
-         const val ORDER_COUNT = 1
     }
 
     fun getSortOrder(): Int {
         val sharedPreferences = PreferenceManager
             .getDefaultSharedPreferences(context)
         return sharedPreferences
-            .getInt(KEY, ORDER_DATE)
+            .getInt(KEY, ORDER_NEWEST)
     }
 
     fun setSortOrder(sortOrder: Int) {

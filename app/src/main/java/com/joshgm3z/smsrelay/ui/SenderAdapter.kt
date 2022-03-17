@@ -24,14 +24,9 @@ constructor(
     }
 
     fun setList(list: List<Sender>) {
-        when (mSharedPrefs.getSortOrder()) {
-            SharedPref.ORDER_DATE -> {
-                mList = SortUtil.byTime(list).toMutableList()
-            }
-            SharedPref.ORDER_COUNT -> {
-                mList = SortUtil.byCount(list).toMutableList()
-            }
-        }
+        mList = SortUtil
+            .sorted(list, mSharedPrefs.getSortOrder())
+            .toMutableList()
         notifyDataSetChanged()
     }
 

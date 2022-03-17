@@ -10,4 +10,5 @@
     <color name="light_gray">#919191</color>
     <color name="ultra_light_gray">#DCDCDC</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="dark_violet">#32003A</color>
 </resources>

@@ -30,7 +30,7 @@ class DateUtil {
         fun getTextDate2(instance: Long): String {
             val date = Date(instance)
             val sdf: SimpleDateFormat = if (DateUtils.isToday(instance)) {
-                SimpleDateFormat("h:m aa")
+                SimpleDateFormat("h:mm aa")
             } else {
                 SimpleDateFormat("MMM DD, YYYY")
             }

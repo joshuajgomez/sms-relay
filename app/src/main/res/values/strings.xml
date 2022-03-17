@@ -5,7 +5,9 @@
     <string name="string_block_summary">now listening to new sms. tap a checkbox to avoid forwarding to telegram</string>
 
     <string-array name="sort_order">
-        <item>most recent</item>
-        <item>most received</item>
+        <item>newest</item>
+        <item>oldest</item>
+        <item>most</item>
+        <item>fewest</item>
     </string-array>
 </resources>
