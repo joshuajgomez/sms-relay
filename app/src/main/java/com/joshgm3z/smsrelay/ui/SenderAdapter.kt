@@ -16,6 +16,7 @@ constructor(
 ) : RecyclerView.Adapter<SenderViewHolder>(), AdapterClickListener {
 
     var mList: MutableList<Sender> = mutableListOf()
+    var mBackupList: MutableList<Sender> = mutableListOf()
 
     var mCallback: AdapterClickListener? = null
 
@@ -24,10 +25,16 @@ constructor(
     }
 
     fun setList(list: List<Sender>) {
-        mList = SortUtil
-            .sorted(list, mSharedPrefs.getSortOrder())
-            .toMutableList()
-        notifyDataSetChanged()
+        if (mBackupList.isNotEmpty()) {
+            mBackupList = SortUtil
+                .sorted(list, mSharedPrefs.getSortOrder())
+                .toMutableList()
+        } else {
+            mList = SortUtil
+                .sorted(list, mSharedPrefs.getSortOrder())
+                .toMutableList()
+            notifyDataSetChanged()
+        }
     }
 
     fun refreshList() {
@@ -71,6 +78,22 @@ constructor(
             // sender already exists
             mList[counter] = sender
             notifyItemChanged(counter)
+        }
+    }
+
+    fun filterList(keyword: String) {
+        if (mBackupList.isEmpty())
+            mBackupList = ArrayList(mList)
+        val filter = mBackupList.filter { sender -> sender.name.contains(keyword, ignoreCase = true) }
+        mList = filter.toMutableList()
+        notifyDataSetChanged()
+    }
+
+    fun clearFilter() {
+        if (mBackupList.isNotEmpty()) {
+            mList = ArrayList(mBackupList)
+            mBackupList.clear()
+            notifyDataSetChanged()
         }
     }
 

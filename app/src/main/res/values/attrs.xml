@@ -4,5 +4,9 @@
     <attr name="colorTextSender" format="color" />
     <attr name="colorTextSubtitle" format="color" />
     <attr name="colorInfoBannerBg" format="color" />
+    <attr name="colorBackground" format="reference" />
     <attr name="icInfo" format="reference" />
+    <attr name="icSearch" format="reference" />
+    <attr name="icClear" format="reference" />
+    <attr name="icBack" format="reference" />
 </resources>

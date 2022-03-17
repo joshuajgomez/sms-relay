@@ -26,7 +26,7 @@ object Logger {
         var className = element.className
         className = className.substring(className.lastIndexOf(".") + 1, className.length)
         val methodName = element.methodName
-        Log.i(TAG + className, "$methodName : $message")
+        Log.println(Log.ASSERT, TAG + className, "$methodName : $message")
     }
 
     fun log(logPriority: Int, message: String?) {

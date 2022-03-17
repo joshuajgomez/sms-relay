@@ -1,15 +1,18 @@
 package com.joshgm3z.smsrelay.ui
 
 import android.Manifest
+import android.app.Activity
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -79,6 +82,51 @@ class MainActivity : AppCompatActivity(), AdapterClickListener, AdapterView.OnIt
         }
         spinner.setSelection(sharedPref.getSortOrder())
         spinner.onItemSelectedListener = this
+
+        val rlSearchContainer: RelativeLayout = findViewById(R.id.rl_search_view)
+        val rlToolBar: RelativeLayout = findViewById(R.id.rl_tool_bar)
+        val ivSearch: ImageView = findViewById(R.id.iv_search)
+        val ivClear: ImageView = findViewById(R.id.iv_clear)
+        val ivBackSearch: ImageView = findViewById(R.id.iv_back)
+        val etSearchText: EditText = findViewById(R.id.et_search)
+        rlSearchContainer.visibility = View.GONE
+        rlToolBar.visibility = View.VISIBLE
+        ivSearch.setOnClickListener {
+            rlToolBar.visibility = View.GONE
+            rlSearchContainer.visibility = View.VISIBLE
+            showKeyboard(etSearchText)
+        }
+        ivBackSearch.setOnClickListener {
+            rlSearchContainer.visibility = View.GONE
+            rlToolBar.visibility = View.VISIBLE
+            etSearchText.text.clear()
+            hideKeyboard(etSearchText)
+            mSenderAdapter.clearFilter()
+        }
+        ivClear.setOnClickListener {
+            etSearchText.text.clear()
+            mSenderAdapter.clearFilter()
+        }
+        etSearchText.addTextChangedListener { text ->
+            if (text != null) {
+                if (text.trim().isNotEmpty())
+                    mSenderAdapter.filterList(text.trim().toString())
+                else if (text.isEmpty())
+                    mSenderAdapter.clearFilter()
+            }
+        }
+    }
+
+    private fun hideKeyboard(view: View) {
+        val inputMethodManager =
+            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    private fun showKeyboard(view: View) {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+        view.requestFocus()
     }
 
     private fun checkSmsPermission() {

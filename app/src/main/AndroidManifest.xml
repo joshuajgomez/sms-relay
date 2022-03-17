@@ -8,9 +8,9 @@
     <application
         android:name=".SmsApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher_round"
+        android:icon="@mipmap/ic_launcher2"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher2"
         android:supportsRtl="true"
         android:theme="@style/Theme.SmsRelay2">
         <receiver android:name=".domain.SmsReceiver"

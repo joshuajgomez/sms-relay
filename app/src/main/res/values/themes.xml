@@ -17,6 +17,10 @@
         <item name="colorTextSender">@color/black</item>
         <item name="colorTextSubtitle">@color/dark_gray</item>
         <item name="colorInfoBannerBg">@color/ultra_light_gray</item>
+        <item name="colorBackground">@color/white</item>
         <item name="icInfo">@drawable/ic_info_violet</item>
+        <item name="icSearch">@drawable/ic_search_light</item>
+        <item name="icClear">@drawable/ic_clear_light</item>
+        <item name="icBack">@drawable/ic_back_light</item>
     </style>
 </resources>

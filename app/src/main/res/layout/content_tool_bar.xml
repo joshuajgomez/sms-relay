@@ -5,28 +5,81 @@
     android:layout_height="70dp">
 
     <RelativeLayout
+        android:id="@+id/rl_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingStart="10dp"
-        android:paddingEnd="20dp">
+        android:paddingEnd="20dp"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:text="@string/app_name"
             android:fontFamily="@font/coolvetica_rg"
+            android:text="@string/app_name"
             android:textColor="?attr/colorTextTitle"
             android:textSize="28sp" />
 
         <Spinner
-            android:layout_centerVertical="true"
             android:id="@+id/spinner_sort_order"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="15dp"
+            android:layout_toLeftOf="@+id/iv_search"
             tools:listitem="@layout/support_simple_spinner_dropdown_item" />
+
+        <ImageView
+            android:id="@+id/iv_search"
+            android:layout_width="35dp"
+            android:layout_height="36dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:padding="5dp"
+            android:src="?attr/icSearch" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_search_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="15dp">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:padding="5dp"
+            android:src="?attr/icBack" />
+
+        <EditText
+            android:id="@+id/et_search"
+            android:layout_width="match_parent"
+            android:layout_height="40sp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_toLeftOf="@+id/iv_clear"
+            android:layout_toRightOf="@+id/iv_back"
+            android:background="?attr/colorBackground"
+            android:hint="Type here" />
+
+        <ImageView
+            android:id="@+id/iv_clear"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:padding="2dp"
+            android:src="?attr/icClear" />
 
     </RelativeLayout>
 </androidx.appcompat.widget.Toolbar>
