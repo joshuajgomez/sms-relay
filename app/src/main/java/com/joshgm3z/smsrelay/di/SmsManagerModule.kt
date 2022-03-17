@@ -4,7 +4,10 @@ import android.content.Context
 import androidx.room.Room
 import com.joshgm3z.smsrelay.domain.SmsRepository
 import com.joshgm3z.smsrelay.room.AppDatabase
+import com.joshgm3z.smsrelay.ui.AdapterClickListener
+import com.joshgm3z.smsrelay.ui.SenderAdapter
 import com.joshgm3z.smsrelay.ui.SenderViewModel
+import com.joshgm3z.smsrelay.utils.SharedPref
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,8 +39,22 @@ class SmsManagerModule {
 
     @Singleton
     @Provides
-    fun providesSenderViewModel(model: SmsRepository, ): SenderViewModel {
+    fun providesSenderViewModel(model: SmsRepository): SenderViewModel {
         return SenderViewModel(model)
+    }
+
+    @Singleton
+    @Provides
+    fun providesSharedPref(@ApplicationContext context: Context): SharedPref {
+        return SharedPref(context)
+    }
+
+    @Singleton
+    @Provides
+    fun providesSenderAdapter(
+        sharedPrefs: SharedPref,
+    ): SenderAdapter {
+        return SenderAdapter(sharedPrefs)
     }
 
 }

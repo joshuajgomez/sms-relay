@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class Sender(
     @PrimaryKey val name: String,
     var count: Int = 0,
-    var isBlocked: Boolean = false
+    var dateModified: Long = 0,
+    var isBlocked: Boolean = false,
 )

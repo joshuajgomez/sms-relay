@@ -5,9 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -18,19 +16,26 @@ import androidx.recyclerview.widget.RecyclerView
 import com.joshgm3z.smsrelay.R
 import com.joshgm3z.smsrelay.room.Sender
 import com.joshgm3z.smsrelay.utils.Logger
+import com.joshgm3z.smsrelay.utils.SharedPref
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), AdapterClickListener {
+class MainActivity : AppCompatActivity(), AdapterClickListener, AdapterView.OnItemSelectedListener {
 
     private lateinit var mRvSenderList: RecyclerView
-    private lateinit var mSenderAdapter: SenderAdapter
-    private lateinit var mClErrorInfo: ConstraintLayout
-    private lateinit var mClList: ConstraintLayout
+
+    @Inject
+    lateinit var mSenderAdapter: SenderAdapter
+
+    private lateinit var mClErrorInfo: LinearLayout
+    private lateinit var mClList: LinearLayout
     private lateinit var mTvErrorInfo: TextView
     private lateinit var mIvErrorInfo: ImageView
     private lateinit var mBtnPermission: Button
+
+    @Inject
+    lateinit var sharedPref: SharedPref
 
     private val senderListObserver = Observer<List<Sender>> { senderList ->
         Logger.log(Log.ASSERT, "mainactivity", "data change")
@@ -51,9 +56,9 @@ class MainActivity : AppCompatActivity(), AdapterClickListener {
 
     private fun initUI() {
         mRvSenderList = findViewById(R.id.rv_sender_list)
-        mSenderAdapter = SenderAdapter(this)
         mRvSenderList.layoutManager = LinearLayoutManager(this)
         mRvSenderList.adapter = mSenderAdapter
+        mSenderAdapter.setCallback(this)
 
         mClErrorInfo = findViewById(R.id.cl_info)
         mClList = findViewById(R.id.cl_sender_list)
@@ -62,6 +67,18 @@ class MainActivity : AppCompatActivity(), AdapterClickListener {
         mBtnPermission = findViewById(R.id.btn_permission)
 
         mSenderViewModel.mSenderList?.observe(this, senderListObserver)
+
+        val spinner: Spinner = findViewById(R.id.spinner_sort_order)
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.sort_order,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner.adapter = adapter
+        }
+        spinner.setSelection(sharedPref.getSortOrder())
+        spinner.onItemSelectedListener = this
     }
 
     private fun checkSmsPermission() {
@@ -114,6 +131,15 @@ class MainActivity : AppCompatActivity(), AdapterClickListener {
 
     override fun onBlockCheckboxToggle(name: String, isBlocked: Boolean) {
         mSenderViewModel.onBlockedCheckboxClicked(name, isBlocked)
+    }
+
+    override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, item: Int, p3: Long) {
+        sharedPref.setSortOrder(item)
+        mSenderAdapter.refreshList()
+    }
+
+    override fun onNothingSelected(p0: AdapterView<*>?) {
+        TODO("Not yet implemented")
     }
 
 }

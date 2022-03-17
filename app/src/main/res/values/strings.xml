@@ -1,6 +1,11 @@
 <resources>
-    <string name="app_name">SMS Relay</string>
-    <string name="string_error_empty_list">Waiting for new SMS</string>
-    <string name="string_error_permission">Please give SMS permission to let the app listen to incoming SMS</string>
-    <string name="string_block_summary">Now listening to new SMS. Tap a checkbox to avoid forwarding to telegram</string>
+    <string name="app_name">sms-relay</string>
+    <string name="string_error_empty_list">waiting for new sms</string>
+    <string name="string_error_permission">please give sms permission to let the app listen to incoming sms</string>
+    <string name="string_block_summary">now listening to new sms. tap a checkbox to avoid forwarding to telegram</string>
+
+    <string-array name="sort_order">
+        <item>most recent</item>
+        <item>most received</item>
+    </string-array>
 </resources>

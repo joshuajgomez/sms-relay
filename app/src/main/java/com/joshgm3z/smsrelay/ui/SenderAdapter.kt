@@ -1,23 +1,42 @@
 package com.joshgm3z.smsrelay.ui
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.joshgm3z.smsrelay.R
 import com.joshgm3z.smsrelay.room.Sender
+import com.joshgm3z.smsrelay.utils.SharedPref
+import com.joshgm3z.smsrelay.utils.SortUtil
+import javax.inject.Inject
 
-class SenderAdapter(
-    private val mCallback: AdapterClickListener
-) : RecyclerView.Adapter<SenderAdapter.SenderViewHolder>(), AdapterClickListener {
+class SenderAdapter
+@Inject
+constructor(
+    val mSharedPrefs: SharedPref,
+) : RecyclerView.Adapter<SenderViewHolder>(), AdapterClickListener {
 
     var mList: MutableList<Sender> = mutableListOf()
 
+    var mCallback: AdapterClickListener? = null
+
+    fun setCallback(callback: AdapterClickListener) {
+        mCallback = callback
+    }
+
     fun setList(list: List<Sender>) {
-        mList = list.toMutableList()
+        when (mSharedPrefs.getSortOrder()) {
+            SharedPref.ORDER_DATE -> {
+                mList = SortUtil.byTime(list).toMutableList()
+            }
+            SharedPref.ORDER_COUNT -> {
+                mList = SortUtil.byCount(list).toMutableList()
+            }
+        }
         notifyDataSetChanged()
+    }
+
+    fun refreshList() {
+        setList(mList)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SenderViewHolder {
@@ -35,48 +54,8 @@ class SenderAdapter(
         return mList.size
     }
 
-    class SenderViewHolder(
-        mItemView: View,
-        private val mCallback: AdapterClickListener
-    ) : RecyclerView.ViewHolder(mItemView) {
-
-        private var mTvName: TextView = itemView.findViewById(R.id.tv_sender_name)
-        private var mTvCount: TextView = itemView.findViewById(R.id.tv_count)
-        private var mTvSerialNumber: TextView = itemView.findViewById(R.id.tv_serial_number)
-        private var mCbBlock: CheckBox = itemView.findViewById(R.id.cb_block)
-        private lateinit var mSender: Sender
-
-        init {
-            mTvName = itemView.findViewById(R.id.tv_sender_name)
-            mTvCount = itemView.findViewById(R.id.tv_count)
-            mTvSerialNumber = itemView.findViewById(R.id.tv_serial_number)
-            mCbBlock = itemView.findViewById(R.id.cb_block)
-            mItemView.setOnClickListener { mCbBlock.performClick() }
-        }
-
-
-        fun setData(sender: Sender, serialNumber: Int) {
-            mSender = sender
-            mTvName.text = sender.name
-            var countText: String = sender.count.toString()
-            countText += if (sender.count == 1) " message" else " messages"
-            mTvCount.text = countText
-            mTvSerialNumber.text = serialNumber.toString()
-            mCbBlock.isChecked = sender.isBlocked
-
-            mCbBlock.setOnCheckedChangeListener { _, isChecked ->
-                if (mSender.isBlocked != isChecked) {
-                    mCallback.onBlockCheckboxToggle(
-                        sender.name,
-                        isChecked
-                    )
-                }
-            }
-        }
-    }
-
     override fun onBlockCheckboxToggle(name: String, isBlocked: Boolean) {
-        mCallback.onBlockCheckboxToggle(name, isBlocked)
+        mCallback?.onBlockCheckboxToggle(name, isBlocked)
     }
 
     fun updateSender(sender: Sender) {

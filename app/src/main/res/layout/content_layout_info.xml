@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cl_info"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/iv_error_info"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/ic_warning" />
+
+    <TextView
+        android:id="@+id/tv_error_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:maxEms="15"
+        android:gravity="center"
+        android:text="@string/string_error_permission"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/btn_permission"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="GIVE PERMISSION" />
+
+</LinearLayout>
