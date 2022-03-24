@@ -9,5 +9,7 @@
         <item>oldest</item>
         <item>most</item>
         <item>fewest</item>
+        <item>blocked</item>
+        <item>unblocked</item>
     </string-array>
 </resources>

@@ -37,7 +37,7 @@ class SenderViewHolder(
             mTvCount.text = countText
             mTvSerialNumber.text = serialNumber.toString()
             mCbBlock.isChecked = sender.isBlocked
-            mTvTime.text = DateUtil.getTextDate2(sender.dateModified)
+            mTvTime.text = DateUtil.getTextDate(sender.dateModified)
 
             mCbBlock.setOnCheckedChangeListener { _, isChecked ->
                 if (mSender.isBlocked != isChecked) {
