@@ -5,6 +5,8 @@ plugins {
 }
 apply plugin: 'kotlin-kapt'
 android {
+    namespace 'com.joshgm3z.smsrelay'
+
     compileSdk 31
 
     defaultConfig {
