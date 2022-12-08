@@ -12,4 +12,5 @@
         <item>blocked</item>
         <item>unblocked</item>
     </string-array>
+    <string name="title_activity_home">HomeActivity</string>
 </resources>
