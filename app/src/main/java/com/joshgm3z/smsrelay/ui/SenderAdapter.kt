@@ -7,10 +7,8 @@ import com.joshgm3z.smsrelay.R
 import com.joshgm3z.smsrelay.room.Sender
 import com.joshgm3z.smsrelay.utils.SharedPref
 import com.joshgm3z.smsrelay.utils.SortUtil
-import javax.inject.Inject
 
 class SenderAdapter
-@Inject
 constructor(
     val mSharedPrefs: SharedPref,
 ) : RecyclerView.Adapter<SenderViewHolder>(), AdapterClickListener {

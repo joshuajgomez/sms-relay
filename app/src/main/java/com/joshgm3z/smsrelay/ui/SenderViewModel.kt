@@ -1,21 +1,12 @@
 package com.joshgm3z.smsrelay.ui
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.joshgm3z.smsrelay.domain.SmsRepository
 import com.joshgm3z.smsrelay.room.Sender
-import com.joshgm3z.smsrelay.utils.Logger
-import com.joshgm3z.smsrelay.utils.SharedPref
-import com.joshgm3z.smsrelay.utils.SortUtil
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class SenderViewModel
-@Inject
-constructor(
+class SenderViewModel(
     private val mSmsRepository: SmsRepository,
 ) : ViewModel() {
 

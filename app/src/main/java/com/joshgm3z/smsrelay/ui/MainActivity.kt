@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -20,15 +19,12 @@ import com.joshgm3z.smsrelay.R
 import com.joshgm3z.smsrelay.room.Sender
 import com.joshgm3z.smsrelay.utils.Logger
 import com.joshgm3z.smsrelay.utils.SharedPref
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+import org.koin.android.ext.android.get
 
-@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), AdapterClickListener, AdapterView.OnItemSelectedListener {
 
-    private lateinit var mRvSenderList: RecyclerView
+    private val mRvSenderList: RecyclerView by lazy { findViewById(R.id.rv_sender_list) }
 
-    @Inject
     lateinit var mSenderAdapter: SenderAdapter
 
     private lateinit var mClErrorInfo: LinearLayout
@@ -37,8 +33,7 @@ class MainActivity : AppCompatActivity(), AdapterClickListener, AdapterView.OnIt
     private lateinit var mIvErrorInfo: ImageView
     private lateinit var mBtnPermission: Button
 
-    @Inject
-    lateinit var sharedPref: SharedPref
+    private var sharedPref: SharedPref = get()
 
     private val senderListObserver = Observer<List<Sender>> { senderList ->
         Logger.log(Log.ASSERT, "mainactivity", "data change")
@@ -46,8 +41,7 @@ class MainActivity : AppCompatActivity(), AdapterClickListener, AdapterView.OnIt
         checkSmsPermission()
     }
 
-    @Inject
-    lateinit var mSenderViewModel: SenderViewModel
+    private var mSenderViewModel: SenderViewModel = get()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +52,6 @@ class MainActivity : AppCompatActivity(), AdapterClickListener, AdapterView.OnIt
     }
 
     private fun initUI() {
-        mRvSenderList = findViewById(R.id.rv_sender_list)
         mRvSenderList.layoutManager = LinearLayoutManager(this)
         mRvSenderList.adapter = mSenderAdapter
         mSenderAdapter.setCallback(this)

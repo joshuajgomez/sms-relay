@@ -3,17 +3,12 @@ package com.joshgm3z.smsrelay.domain
 import android.telephony.SmsMessage
 import com.joshgm3z.smsrelay.room.AppDatabase
 import com.joshgm3z.smsrelay.room.Sender
-import com.joshgm3z.smsrelay.ui.SenderContract
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class SmsRepository
-@Inject
-constructor(private val mAppDatabase: AppDatabase) {
+class SmsRepository(private val mAppDatabase: AppDatabase) {
 
     companion object {
         private const val TAG = "SmsManager"
@@ -79,7 +74,7 @@ constructor(private val mAppDatabase: AppDatabase) {
     }
 
     fun addSampleData() {
-        GlobalScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             mAppDatabase.senderDao().insert(Sender("Sender#1", 3, getRandomDate(0)))
             mAppDatabase.senderDao().insert(Sender("Sender#2", 1, getRandomDate(-100000000)))
             mAppDatabase.senderDao().insert(Sender("Sender#3", 3, getRandomDate(-1000000000)))
@@ -94,7 +89,7 @@ constructor(private val mAppDatabase: AppDatabase) {
         }
     }
 
-    fun getRandomDate(random: Long): Long {
+    private fun getRandomDate(random: Long): Long {
         return System.currentTimeMillis() + random
     }
 
