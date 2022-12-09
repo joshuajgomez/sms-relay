@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
@@ -42,6 +43,13 @@ fun SenderItem() {
                         bottom.linkTo(parent.bottom)
                         start.linkTo(parent.start, margin = 20.dp)
                     }
+                    .background(shape = CircleShape, color = Color.LightGray)
+                    .padding(
+                        start = 8.dp,
+                        end = 8.dp,
+                        top = 2.dp,
+                        bottom = 2.dp,
+                    )
             )
 
             Text(
@@ -77,7 +85,8 @@ fun SenderItem() {
                         bottom.linkTo(tvIndex.bottom)
                         end.linkTo(cbBlockStatus.start)
                     },
-                fontSize = 13.sp
+                fontSize = 13.sp,
+                color = Color.Gray
             )
 
             Checkbox(
