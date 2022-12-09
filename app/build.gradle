@@ -111,4 +111,6 @@ dependencies {
     def koin_android_compose_version= "3.3.0"
     // Jetpack Compose
     implementation "io.insert-koin:koin-androidx-compose:$koin_android_compose_version"
+
+    implementation 'com.google.accompanist:accompanist-permissions:0.21.1-beta'
 }
