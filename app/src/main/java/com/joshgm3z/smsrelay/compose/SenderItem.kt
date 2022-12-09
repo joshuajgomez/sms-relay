@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -13,14 +15,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.joshgm3z.smsrelay.room.Sender
+import com.joshgm3z.smsrelay.utils.DateUtil
+import com.joshgm3z.smsrelay.utils.getSampleList
+import com.joshgm3z.smsrelay.utils.getSampleSender
 
 @Composable
-fun SenderItem() {
+fun SenderItem(
+    index: Int,
+    sender: Sender,
+    onCheckedChange: (sender: Sender) -> Unit
+) {
     Card(shape = RoundedCornerShape(5.dp)) {
         ConstraintLayout(
             modifier = Modifier
@@ -36,12 +46,12 @@ fun SenderItem() {
             ) = createRefs()
 
             Text(
-                text = "1",
+                text = "$index",
                 modifier = Modifier
                     .constrainAs(tvIndex) {
                         top.linkTo(parent.top)
                         bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start, margin = 20.dp)
+                        start.linkTo(parent.start, margin = 15.dp)
                     }
                     .background(shape = CircleShape, color = Color.LightGray)
                     .padding(
@@ -53,20 +63,23 @@ fun SenderItem() {
             )
 
             Text(
-                text = "Sender",
+                text = sender.name,
                 modifier = Modifier
                     .constrainAs(tvSenderName) {
                         top.linkTo(tvIndex.top)
                         bottom.linkTo(tvIndex.bottom)
-                        start.linkTo(tvIndex.end, margin = 20.dp)
+                        start.linkTo(tvIndex.end, margin = 15.dp)
                     }
-                    .offset(y = (-10).dp),
+                    .offset(y = (-10).dp)
+                    .widthIn(max = 200.dp),
                 color = Color.Black,
-                fontSize = 20.sp
+                fontSize = 20.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
 
             Text(
-                text = "5 messages",
+                text = "${sender.count} messages",
                 modifier = Modifier
                     .constrainAs(tvMessageCount) {
                         top.linkTo(tvSenderName.bottom, margin = 0.dp)
@@ -78,7 +91,7 @@ fun SenderItem() {
             )
 
             Text(
-                text = "5:34 pm",
+                text = DateUtil.getTextDate(sender.dateModified),
                 modifier = Modifier
                     .constrainAs(tvTime) {
                         top.linkTo(tvIndex.top)
@@ -90,8 +103,8 @@ fun SenderItem() {
             )
 
             Checkbox(
-                checked = true,
-                onCheckedChange = { },
+                checked = sender.isBlocked,
+                onCheckedChange = { onCheckedChange(sender) },
                 modifier = Modifier
                     .constrainAs(cbBlockStatus) {
                         top.linkTo(tvIndex.top)
@@ -107,8 +120,8 @@ fun SenderItem() {
 @Composable
 fun PreviewSenderItem() {
     LazyColumn {
-        items(count = 5) {
-            SenderItem()
+        itemsIndexed(items = getSampleList()) { index, sender ->
+            SenderItem(index + 1, sender) {}
         }
     }
 }

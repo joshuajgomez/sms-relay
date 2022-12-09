@@ -15,7 +15,7 @@ class SenderViewModel(
     init {
         //mSmsRepository.addSampleData()
         viewModelScope.launch {
-            mSenderList = mSmsRepository.getSenderList().asLiveData()
+//            mSenderList = mSmsRepository.getSenderList().asLiveData()
         }
     }
 

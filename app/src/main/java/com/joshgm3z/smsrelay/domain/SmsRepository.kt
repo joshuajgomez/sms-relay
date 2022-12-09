@@ -1,12 +1,10 @@
 package com.joshgm3z.smsrelay.domain
 
 import android.telephony.SmsMessage
+import androidx.lifecycle.LiveData
 import com.joshgm3z.smsrelay.room.AppDatabase
 import com.joshgm3z.smsrelay.room.Sender
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
+import com.joshgm3z.smsrelay.utils.getSampleList
 
 class SmsRepository(private val mAppDatabase: AppDatabase) {
 
@@ -22,7 +20,7 @@ class SmsRepository(private val mAppDatabase: AppDatabase) {
         checkAndRelayMessage(sender, message)
     }
 
-    private fun checkAndRelayMessage(sender: String, message: String) {
+    private suspend fun checkAndRelayMessage(sender: String, message: String) {
         if (!mAppDatabase.senderDao().getSender(sender).isBlocked) {
             RelayManager().relaySms(sender, message)
         }
@@ -57,7 +55,7 @@ class SmsRepository(private val mAppDatabase: AppDatabase) {
         }
     }
 
-    suspend fun getSenderList(): Flow<List<Sender>> {
+    fun getSenderList(): LiveData<List<Sender>> {
         return mAppDatabase.senderDao().getAllSenders()
     }
 
@@ -73,24 +71,6 @@ class SmsRepository(private val mAppDatabase: AppDatabase) {
         return message
     }
 
-    fun addSampleData() {
-        CoroutineScope(Dispatchers.IO).launch {
-            mAppDatabase.senderDao().insert(Sender("Sender#1", 3, getRandomDate(0)))
-            mAppDatabase.senderDao().insert(Sender("Sender#2", 1, getRandomDate(-100000000)))
-            mAppDatabase.senderDao().insert(Sender("Sender#3", 3, getRandomDate(-1000000000)))
-            mAppDatabase.senderDao().insert(Sender("Sender#4", 5, getRandomDate(1500000000)))
-            mAppDatabase.senderDao().insert(Sender("Sender#5", 19, getRandomDate(30000000000)))
-            mAppDatabase.senderDao().insert(Sender("Sender#6", 100, getRandomDate(-6000000000)))
-            mAppDatabase.senderDao().insert(Sender("Sender#7", 7, getRandomDate(-20000000000)))
-            mAppDatabase.senderDao().insert(Sender("Sender#8", 8, getRandomDate(-7000000000)))
-            mAppDatabase.senderDao().insert(Sender("Sender#9", 4, getRandomDate(80000000000)))
-            mAppDatabase.senderDao().insert(Sender("Sender#10", 2, getRandomDate(-4000000000)))
-            mAppDatabase.senderDao().insert(Sender("Sender#11", 1, getRandomDate(-133000000000033)))
-        }
-    }
-
-    private fun getRandomDate(random: Long): Long {
-        return System.currentTimeMillis() + random
-    }
+    suspend fun addSampleData() = mAppDatabase.senderDao().insertAll(getSampleList())
 
 }

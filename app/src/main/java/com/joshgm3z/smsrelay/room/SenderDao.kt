@@ -9,20 +9,23 @@ import kotlinx.coroutines.flow.Flow
 interface SenderDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(sender: Sender)
+    suspend fun insert(sender: Sender)
 
     @Update
-    fun update(sender: Sender)
+    suspend fun update(sender: Sender)
 
     @Query("SELECT * FROM Sender")
-    fun getAll(): List<Sender>
+    suspend fun getAll(): List<Sender>
 
     @Query("SELECT * FROM Sender")
-    fun getAllSenders(): Flow<List<Sender>>
+    fun getAllSenders(): LiveData<List<Sender>>
 
     @Query("SELECT * FROM Sender WHERE name IS :name")
-    fun getSender(name: String): Sender
+    suspend fun getSender(name: String): Sender
 
     @Query("DELETE FROM Sender")
-    fun deleteAll(): Int
+    suspend fun deleteAll(): Int
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(senderList: List<Sender>)
 }

@@ -1,6 +1,7 @@
 package com.joshgm3z.smsrelay.di
 
 import androidx.room.Room
+import com.joshgm3z.smsrelay.compose.MainViewModel
 import com.joshgm3z.smsrelay.domain.SmsRepository
 import com.joshgm3z.smsrelay.room.AppDatabase
 import com.joshgm3z.smsrelay.ui.SenderViewModel
@@ -25,7 +26,7 @@ val appModule = module {
     }
 
     viewModel {
-        SenderViewModel(get())
+        MainViewModel(get())
     }
 
     single {
