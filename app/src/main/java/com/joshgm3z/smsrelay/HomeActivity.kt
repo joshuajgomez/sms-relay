@@ -80,9 +80,10 @@ fun HomeContainer(
             )
 
         if (isSmsPermissionGranted)
-            MainContainer(
+            ListContainer(
                 senderListLive = senderListLive,
-                onCheckedChangeClick = { onCheckedChange(it) }
+                onCheckedChangeClick = { onCheckedChange(it) },
+                isSearchMode = isSearchMode
             )
         else
             PermissionError { onAskForPermission() }

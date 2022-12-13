@@ -19,12 +19,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.joshgm3z.smsrelay.room.Sender
-import com.joshgm3z.smsrelay.utils.getSampleList
 
 @Composable
-fun MainContainer(
+fun ListContainer(
     senderListLive: LiveData<List<Sender>>,
     onCheckedChangeClick: (sender: Sender) -> Unit,
+    isSearchMode: Boolean,
 ) {
     Column(
         Modifier
@@ -33,8 +33,8 @@ fun MainContainer(
     ) {
 
         val senderList =
-        if (isPreview()) getSampleList()
-//            if (isPreview()) listOf()
+//        if (isPreview()) getSampleList()
+            if (isPreview()) listOf()
             else senderListLive.observeAsState(initial = listOf()).value
 
         AnimatedVisibility(
@@ -42,9 +42,9 @@ fun MainContainer(
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                Spacer(modifier = Modifier.height(90.dp))
                 Icon(
                     imageVector = Icons.Outlined.Sms,
                     contentDescription = "empty sms",
@@ -53,7 +53,9 @@ fun MainContainer(
                 )
                 Spacer(modifier = Modifier.height(30.dp))
                 Text(
-                    text = "waiting for first sms",
+                    text =
+                    if (isSearchMode) "No senders by that name"
+                    else "Waiting for first sms",
                     color = Color.Gray,
                 )
             }
@@ -86,5 +88,5 @@ fun isPreview(): Boolean = LocalInspectionMode.current
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewMainContainer() {
-    MainContainer(MutableLiveData(), {})
+    ListContainer(MutableLiveData(), {}, isSearchMode = true)
 }
