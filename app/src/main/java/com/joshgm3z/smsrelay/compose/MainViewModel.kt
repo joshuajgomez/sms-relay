@@ -1,6 +1,8 @@
 package com.joshgm3z.smsrelay.compose
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.joshgm3z.smsrelay.domain.SmsRepository
 import com.joshgm3z.smsrelay.room.Sender
@@ -11,12 +13,38 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(private val repository: SmsRepository) : ViewModel() {
 
-    var senderList: LiveData<List<Sender>> = repository.getSenderList()
+    val senderList: LiveData<List<Sender>> = repository.getSenderList()
 
-    fun onSearchIconClick() = CoroutineScope(Dispatchers.IO)
-        .launch {
-            repository.addSampleData()
+    var senderListResult: MutableLiveData<List<Sender>> = MutableLiveData()
+
+    val isSearchMode = mutableStateOf(false)
+
+    fun onSearchIconClick() {
+        isSearchMode.value = true
+        senderListResult.value = senderList.value
+    }
+
+    fun onAppTitleLongClick() {
+        CoroutineScope(Dispatchers.IO)
+            .launch {
+                repository.addSampleData()
+            }
+    }
+
+    fun onSearchInputChanged(input: String) {
+        if (input.isNotEmpty()) {
+            senderListResult.value = senderList.value?.filter { sender: Sender ->
+                sender.name.contains(input)
+            }
+        } else {
+            senderListResult.value = senderList.value
         }
+        Logger.log("$input: ${senderListResult.value}")
+    }
+
+    fun onSearchBackIconClick() {
+        isSearchMode.value = false
+    }
 
     fun onCheckedChange(sender: Sender) {
         Logger.log("sender = $sender")

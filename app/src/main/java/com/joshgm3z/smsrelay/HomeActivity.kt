@@ -8,19 +8,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ErrorOutline
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -39,12 +30,19 @@ class HomeActivity : ComponentActivity() {
                 val permissionState = rememberPermissionState(
                     permission = Manifest.permission.RECEIVE_SMS
                 )
+                val isSearchMode = mainViewModel.isSearchMode.value
                 HomeContainer(
                     isSmsPermissionGranted = permissionState.hasPermission,
-                    senderListLive = mainViewModel.senderList,
+                    senderListLive =
+                    if (isSearchMode) mainViewModel.senderListResult
+                    else mainViewModel.senderList,
                     onSearchIconClick = { mainViewModel.onSearchIconClick() },
                     onCheckedChange = { mainViewModel.onCheckedChange(it) },
-                    onAskForPermission = { permissionState.launchPermissionRequest() }
+                    onAskForPermission = { permissionState.launchPermissionRequest() },
+                    isSearchMode = isSearchMode,
+                    onAppTitleLongClick = { mainViewModel.onAppTitleLongClick() },
+                    onSearchBackIconClick = { mainViewModel.onSearchBackIconClick() },
+                    onSearchInputChange = { mainViewModel.onSearchInputChanged(it) }
                 )
             }
         }
@@ -57,8 +55,12 @@ fun HomeContainer(
     isSmsPermissionGranted: Boolean,
     senderListLive: LiveData<List<Sender>>,
     onSearchIconClick: () -> Unit,
+    onAppTitleLongClick: () -> Unit,
     onCheckedChange: (sender: Sender) -> Unit,
     onAskForPermission: () -> Unit,
+    isSearchMode: Boolean,
+    onSearchBackIconClick: () -> Unit,
+    onSearchInputChange: (String) -> Unit,
 ) {
     Column(
         Modifier
@@ -66,7 +68,16 @@ fun HomeContainer(
             .background(MaterialTheme.colorScheme.background)
     ) {
 
-        ActionBar { onSearchIconClick() }
+        if (isSearchMode)
+            SearchBar(
+                onSearchInputChange = { onSearchInputChange(it) },
+                onSearchBackIconClick = { onSearchBackIconClick() }
+            )
+        else
+            ActionBar(
+                onAppTitleLongClick = { onAppTitleLongClick() },
+                onSearchIconClick = { onSearchIconClick() }
+            )
 
         if (isSmsPermissionGranted)
             MainContainer(
@@ -76,37 +87,6 @@ fun HomeContainer(
         else
             PermissionError { onAskForPermission() }
 
-    }
-}
-
-@Composable
-fun PermissionError(askForPermission: () -> Unit) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 80.dp)
-    ) {
-        Icon(
-            imageVector = Icons.Outlined.ErrorOutline,
-            contentDescription = "error icon",
-            modifier = Modifier.size(80.dp),
-            tint = Color.Gray
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            text = "please give sms permission to let the " +
-                    "app listen to incoming sms",
-            modifier = Modifier.width(280.dp),
-            textAlign = TextAlign.Center,
-            color = Color.Gray
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        Button(
-            onClick = { askForPermission() }
-        ) {
-            Text(text = "Give Permission")
-        }
     }
 }
 
@@ -120,6 +100,10 @@ fun DefaultPreview() {
             onCheckedChange = {},
             onSearchIconClick = {},
             onAskForPermission = {},
+            isSearchMode = false,
+            onAppTitleLongClick = {},
+            onSearchBackIconClick = {},
+            onSearchInputChange = {},
         )
     }
 }
